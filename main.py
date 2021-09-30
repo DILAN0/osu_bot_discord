@@ -34,7 +34,7 @@ def data():
 
 def get_token():
     data = {
-        'client_id': '10055',
+        'client_id': '',
         'client_secret': '',
         'grant_type': 'client_credentials',
         'scope': 'public'
