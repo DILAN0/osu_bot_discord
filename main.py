@@ -28,7 +28,7 @@ def data():
     conn.commit()
 #---data()---
 #     ^
-#     |\
+#     |
 #     |
 #Remove comment if there is no database
 
