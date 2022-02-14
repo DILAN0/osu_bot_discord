@@ -6,6 +6,7 @@ from discord_components import Button,ButtonStyle
 import time
 from Token import key
 intents = discord.Intents.all()
+
 bot = commands.Bot(command_prefix='.' , intents = intents)
 
 token = key
