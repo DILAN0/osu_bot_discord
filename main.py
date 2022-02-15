@@ -149,49 +149,30 @@ async def on_member_update(prev, cur):
 #         pass
 
 @bot.event
-async def osu_data(ctx,cur):
+async def on_member_update(ctx,cur):
     try:
-       uid = cur.id
+        uid = cur.id
 
-       id_osu=cur.activity.assets['large_text'].split('(', 1)[0]
+        id_osu=cur.activity.assets['large_text'].split('(', 1)[0]
 
-       for row in cursor.execute(f"SELECT nickname,pp,account,osu FROM users where id={cur.id}"):
-            queue = []
-            if row[3] != 'S':
-                break
-            else:
-               games = ["osu!"]
-               if cur.activity.name in games and cur.activity.details:
-                   if cursor.execute(f"UPDATE users SET osu=? where id=?", (id_osu, uid)):
-                       queue.append(row[3])
-                       await cur.send("ADD ID OSU")
+        for row in cursor.execute(f"SELECT nickname,pp,account,osu FROM users where id={cur.id}"):
+                if row[3] != 'S':
+                    break
+                else:
+                    games = ["osu!"]
+                    if cur.activity.name in games and cur.activity.details:
+                        if cursor.execute(f"UPDATE users SET osu=? where id=?", (id_osu, uid)):
 
-                       conn.commit()
-                   else:
-                       await cur.send('ERROR')
-            conn.commit()
+                            await cur.send(f"✔ Your OSU Account Add {cur.activity.assets['large_text']}")
+
+                        else:
+                            await cur.send('ERROR')
+        conn.commit()
+
+    except AttributeError:
+        print(f"[log] AttributeError {cur.name}")
     except:
-        print("[log] AttributeError")
-
-@bot.event
-async def osu_submit(ctx,cur):
-
-    headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-    }
-
-    params = (
-        ('mode', 'voluptas'),
-        ('mods', 'sed'),
-    )
-
-    response = requests.get('https://osu.ppy.sh/api/v2/beatmaps/869019/scores/users/23764407', headers=headers, params=params)
-    channel = bot.get_channel(792491223495606352)
-    await channel.send(response)
-
-
-
+        print(f'[log] Other ERROR {cur.name}')
 
 # @bot.event
 # async def on_member_update(before, after):
