@@ -4,7 +4,7 @@ from discord.ext import commands
 import sqlite3, sys
 from discord_components import Button,ButtonStyle
 import time
-from Token import key
+from Token import key,client_s
 
 intents = discord.Intents.all()
 
@@ -38,7 +38,7 @@ def data():
 def get_token():
     data = {
         'client_id': '10055',
-        'client_secret': 'S1q6W4jw3LQF5plV5bnxtSTXL9x3wy705BSL76hy',
+        'client_secret': client_s,
         'grant_type': 'client_credentials',
         'scope': 'public'
     }
