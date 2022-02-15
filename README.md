@@ -11,3 +11,4 @@ Tracks discord profile activity (doesn't work if this feature is disabled in OSU
 In the plans:
 1) Tracking submit score (within the database)
 2) Redesign of the entire ui embed
+3) Rewrite the code in accordance with the new architecture
