@@ -47,6 +47,25 @@ def get_token():
 
     return response.json().get('access_token')
 
+def response(id):
+    token = get_token()
+    id = id.split(' ', 1)[0]
+    headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': f'Bearer {token}'
+    }
+    params = {
+        'mode': 'osu',  # https://osu.ppy.sh/docs/index.html #gamemode
+        'limit': 5  # Maximum number of results
+    }
+    response = requests.get(f'{API_URL}/users/{id}', params=params, headers=headers)
+    osu_assets = response.json()
+    pp = osu_assets['statistics']['pp']
+    id = osu_assets['id']
+    avatar = osu_assets['avatar_url']
+    return pp,id,avatar
+
 @bot.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
@@ -76,16 +95,14 @@ async def add(ctx ,service,teg):
 
 @bot.command()
 async def account(ctx):
-
     for row in cursor.execute(f"SELECT nickname,pp,account,osu FROM users where id={ctx.author.id}"):
-        embed = discord.Embed(title="Данные:", color=discord.Color.red())
+        pp,id,avatar = response(id = row[3])
+        embed = discord.Embed(title="Данные:", color=discord.Color.purple())
         embed.add_field(name=ctx.author.name,value=ctx.author.id,inline=False)
-        embed.set_thumbnail(url=ctx.author.avatar_url)
-        embed.add_field(name="URL", value=f"https://osu.ppy.sh/users/{row[3]}", inline=False)
-
-        await ctx.send(
-            embed = embed,
-        )
+        embed.set_thumbnail(url=avatar)
+        embed.add_field(name="OSU", value=f"https://osu.ppy.sh/users/{id}", inline=False)
+        embed.add_field(name="PP", value=pp, inline=False)
+        await ctx.send(embed = embed)
 
 @bot.command()
 #информация о игроке
