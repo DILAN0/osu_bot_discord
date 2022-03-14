@@ -6,7 +6,7 @@ Tracks discord profile activity (doesn't work if this feature is disabled in OSU
 
 ![image](https://user-images.githubusercontent.com/70542011/154066080-ea276f0e-ec50-416b-867c-324dcebde3fe.png)
 
-![image](https://user-images.githubusercontent.com/70542011/158175913-b6352e50-ea17-4df0-b14d-fa6a82465d9e.png)
+![image](https://user-images.githubusercontent.com/70542011/158176095-9130ba33-14a1-49d4-9481-5d0c921fd405.png)
 
 ![image](https://user-images.githubusercontent.com/70542011/158175994-a2bef6c9-ad82-491b-9ab2-438f59886267.png)
 
