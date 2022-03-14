@@ -208,13 +208,12 @@ async def score(ctx,type,offset):
             ('offset', f'{offset}'),
         )
 
-
         res = requests.get(f'https://osu.ppy.sh/api/v2/users/{id}/scores/{type}', headers=headers, params=params)
         score_assets = res.json()
 
-
-        beatmap_id = score_assets[0]["beatmap"]["url"]
         pp = score_assets[0]["pp"]
+        if score_assets[0]['rank'] == 'D':
+            image_rank = "https://i.ppy.sh/7fd069c3993d08d4fbdb8c80c7357faf417c5444/68747470733a2f2f6f73752e7070792e73682f77696b692f696d616765732f536b696e6e696e672f496e746572666163652f696d672f72616e6b696e672d442e706e67"
         if score_assets[0]['rank'] == 'A':
             image_rank = "https://i.ppy.sh/8b9333010fbabc4d8b8c70631f64f380f945d72c/68747470733a2f2f6f73752e7070792e73682f77696b692f696d616765732f536b696e6e696e672f496e746572666163652f696d672f72616e6b696e672d412e706e67"
         if score_assets[0]['rank'] == 'S':
@@ -230,22 +229,22 @@ async def score(ctx,type,offset):
         if score_assets[0]['rank'] == 'XH':
             image_rank = "https://i.ppy.sh/77981a1d357411d2e3f5cb0d04d232010d51ecbd/68747470733a2f2f6f73752e7070792e73682f77696b692f696d616765732f536b696e6e696e672f496e746572666163652f696d672f72616e6b696e672d58482e706e67"
 
-        title = score_assets[0]["beatmapset"]["title"]
-        id_score = score_assets[0]["best_id"]
-        mods = score_assets[0]["mods"]
-        cover = score_assets[0]['beatmapset']['covers']['list']
-        embed = discord.Embed(title=f"{title} ({score_assets[0]['beatmap']['version']}) {mods}", url= beatmap_id,color=discord.Color.from_rgb(255, 102, 170))
+        embed = discord.Embed(title=f"{score_assets[0]['beatmapset']['title']} ({score_assets[0]['beatmap']['version']}) {score_assets[0]['mods']}", url=score_assets[0]['beatmap']['url'] ,color=discord.Color.from_rgb(255, 102, 170))
         embed.set_image(url=f"{score_assets[0]['beatmapset']['covers']['cover']}")
         embed.set_thumbnail(url=image_rank)
-        embed.add_field(name="Score:", value=f"https://osu.ppy.sh/scores/osu/{id_score}", inline=False)
+        embed.add_field(name="►Score:", value=f"https://osu.ppy.sh/scores/osu/{score_assets[0]['best_id']}", inline=False)
         embed.set_author(name=f"{score_assets[0]['user']['username']}",icon_url=avatar,url=f"https://osu.ppy.sh/users/{id}")
-        embed.add_field(name='Accuracy:', value=f"{float(round((score_assets[0]['accuracy']) * 100))} %", inline=True)
-        embed.add_field(name='Rank:', value=f"{score_assets[0]['rank']}", inline=True)
-        embed.add_field(name='Performance:' ,value=f"{pp} pp", inline=True)
+        embed.add_field(name=f'►Accuracy: ',value=f"{float(round((score_assets[0]['accuracy']) * 100)) }%", inline=True)
+        if score_assets[0]['perfect'] == True:
+            embed.add_field(name='►Combo:', value="FC", inline=True)
+        else:
+            embed.add_field(name='►Combo:',value=score_assets[0]['max_combo'],inline=True)
 
-        embed.set_footer(text=f"{score_assets[0]['created_at']}")
+        embed.add_field(name='►Performance:' ,value=f"{pp} pp", inline=True)
 
-        print(score_assets)
+        embed.set_footer(text=f"{score_assets[0]['created_at']}", icon_url='https://img.icons8.com/clouds/344/osu.png')
+
+
         await ctx.send(embed = embed)
 
 
