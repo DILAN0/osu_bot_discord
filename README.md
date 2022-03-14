@@ -6,6 +6,8 @@ Tracks discord profile activity (doesn't work if this feature is disabled in OSU
 
 ![image](https://user-images.githubusercontent.com/70542011/154066080-ea276f0e-ec50-416b-867c-324dcebde3fe.png)
 
+![image](https://user-images.githubusercontent.com/70542011/158146929-76802640-a7b8-41ff-9903-58ff12d346c1.png)
+
 
 In the plans:
 1) Tracking submit score (within the database)
