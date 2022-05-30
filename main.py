@@ -2,8 +2,8 @@ import requests
 import discord
 from discord.ext import commands
 import sqlite3
-from Token import key
-from res.token_func import get_token, response
+from Token import token
+from res.token_func import get_token, response,API_URL
 from res.create_data import check_file
 import os
 
@@ -13,14 +13,8 @@ intents = discord.Intents.all()
 
 bot = commands.Bot(command_prefix='.' , intents = intents)
 
-token = key
-
-API_URL = 'https://osu.ppy.sh/api/v2'
-TOKEN_URL = 'https://osu.ppy.sh/oauth/token'
-
 conn = sqlite3.connect("osubot.db")
 cursor = conn.cursor()
-
 
 @bot.event
 async def on_ready():
@@ -106,21 +100,6 @@ async def on_member_update(prev, cur):
                 await cur.remove_roles(role)
 
 
-
-# @bot.event
-# async def on_member_update(ctx,cur):
-#     games = ["osu!"]
-#     uid = cur.id
-#     id_osu=cur.activity.assets['large_text'].split('(', 1)[0]
-#
-#     if search and cur.activity.name in games and cur.activity.details:
-#         if cursor.execute(f"UPDATE users SET osu=? where id=?", (id_osu, uid)):
-#             await cur.send("ADD ID OSU")
-#         else:
-#             await cur.send('ERROR')
-#     else:
-#         pass
-
 @bot.event
 async def on_member_update(ctx,cur):
     try:
@@ -205,20 +184,9 @@ async def score(ctx,type,offset):
 
         await ctx.send(embed = embed)
 
-@bot.command()
-async def replay(ctx):
-    os.system('D:\Project\osu-discord-bot\danser--go\danser.exe -t="Ashes of the Dawn" -d="Expert" -replay="D:\GAmes\osu!\Replays\DILAN_NAXUY - DragonForce - Ashes of the Dawn [Expert] (2022-03-08) Osu.osr" -record')
-
-# @bot.event
-# async def on_member_update(before, after):
-#     if before.status != after.status:  # работать только на статусе
-#         embed = discord.Embed(title=f"Changed status")
-#         embed.add_field(name='User', value=before.mention)
-#         embed.add_field(name='Before', value=before.status)
-#         embed.add_field(name='After', value=after.status)
-#         channel = bot.get_channel(792491223495606352)  # id канала для уведомлениях изменений в профиле
-#         await channel.send(embed=embed)
-#         admin = bot.get_user(332932417520402434)  # id пользователя (выполнение проверки по id)
-#         await admin.send(embed=embed)
+# @bot.command()
+# async def replay(ctx):
+#     os.system('D:\Project\osu-discord-bot\danser--go\danser.exe -t="Ashes of the Dawn" -d="Expert" -replay="D:\GAmes\osu!\Replays\DILAN_NAXUY - DragonForce - Ashes of the Dawn [Expert] (2022-03-08) Osu.osr" -record')
+#
 
 bot.run(token)
