@@ -2,7 +2,9 @@ import requests
 import discord
 from discord.ext import commands
 import sqlite3
-from Token import key,client_s
+from Token import key
+from res.token_func import get_token, response
+import os
 
 intents = discord.Intents.all()
 
@@ -16,53 +18,6 @@ TOKEN_URL = 'https://osu.ppy.sh/oauth/token'
 conn = sqlite3.connect("osubot.db")
 cursor = conn.cursor()
 
-def data():
-    cursor.execute("""CREATE TABLE "users" (
-                "id"	INT,
-                "nickname"	TEXT,
-                "mention"	TEXT,
-                "account"	TEXT,
-                "steam"  TEXT,
-                "osu"  TEXT,
-                "pp"  INT
-            )""")
-    conn.commit()
-#----data()
-#     ^
-#     |
-#     |
-#Remove comment if there is no database
-
-def get_token():
-    data = {
-        'client_id': '10055',
-        'client_secret': client_s,
-        'grant_type': 'client_credentials',
-        'scope': 'public'
-    }
-
-    response = requests.post(TOKEN_URL, data=data)
-
-    return response.json().get('access_token')
-
-def response(id):
-    token = get_token()
-    id = id.split(' ', 1)[0]
-    headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': f'Bearer {token}'
-    }
-    params = {
-        'mode': 'osu',  # https://osu.ppy.sh/docs/index.html #gamemode
-        'limit': 5  # Maximum number of results
-    }
-    response = requests.get(f'{API_URL}/users/{id}', params=params, headers=headers)
-    osu_assets = response.json()
-    pp = osu_assets['statistics']['pp']
-    id = osu_assets['id']
-    avatar = osu_assets['avatar_url']
-    return pp,id,avatar
 
 @bot.event
 async def on_ready():
@@ -247,6 +202,9 @@ async def score(ctx,type,offset):
 
         await ctx.send(embed = embed)
 
+@bot.command()
+async def replay(ctx):
+    os.system('D:\Project\osu-discord-bot\danser--go\danser.exe -t="Ashes of the Dawn" -d="Expert" -replay="D:\GAmes\osu!\Replays\DILAN_NAXUY - DragonForce - Ashes of the Dawn [Expert] (2022-03-08) Osu.osr" -record')
 
 # @bot.event
 # async def on_member_update(before, after):
