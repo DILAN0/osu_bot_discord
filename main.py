@@ -5,7 +5,6 @@ import sqlite3
 from Token import token
 from res.token_func import get_token, response,API_URL
 from res.create_data import check_file
-import os
 
 check_file()
 
@@ -36,11 +35,11 @@ async def add(ctx ,service,teg):
 
     if service == "osu":
         if cursor.execute(f"UPDATE users SET osu=? where id=?", (teg,uid)):
-            await ctx.send(f"[LOG] ADD OSU PROFILE")
+            await ctx.send(f"[LOG] Данные о вашем аккаунте были добавлены")
         else:
-            await ctx.send(f"[LOG] NOT ADD ACCOUNT")
+            await ctx.send(f"[LOG] Данные о вашем аккаунте не были добавлены")
     else:
-        await ctx.send(f"[LOG] ШО ЗА ХУЙНЯ ???")
+        await ctx.send(f"[LOG] Данный сервис не поддерживается")
     conn.commit()
 
 @bot.command()
@@ -55,11 +54,11 @@ async def account(ctx):
         await ctx.send(embed = embed)
 
 @bot.command()
-#информация о игроке
+#Информация о игроке (Работает только с id)
 async def info_player(ctx, id):
-    #Создаем экземпляр token который забирает в себя функцию
+
     token = get_token()
-    #.....
+    #..........
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -67,10 +66,11 @@ async def info_player(ctx, id):
     }
 
     params = {
-        'mode': 'osu',#https://osu.ppy.sh/docs/index.html #gamemode
-        'limit': 5 #Maximum number of results
+        'mode': 'osu',
+        'limit': 5
     }
-
+    #https://osu.ppy.sh/docs/index.html #gamemode
+    #..........
     response = requests.get(f'{API_URL}/users/{id}', params=params, headers=headers)
 
     beatmapset_data = response.json()
