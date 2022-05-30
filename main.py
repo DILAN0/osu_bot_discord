@@ -4,7 +4,10 @@ from discord.ext import commands
 import sqlite3
 from Token import key
 from res.token_func import get_token, response
+from res.create_data import check_file
 import os
+
+check_file()
 
 intents = discord.Intents.all()
 

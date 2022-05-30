@@ -1,4 +1,5 @@
 import sqlite3
+import os.path
 
 conn = sqlite3.connect("../osubot.db")
 cursor = conn.cursor()
@@ -14,3 +15,10 @@ def data():
                 "pp"  INT
             )""")
     conn.commit()
+
+def check_file():
+    if os.path.exists("../osu-discord-bot/osubot.db") == True:
+        print("Data File ✓")
+    if os.path.exists("../osu-discord-bot/osubot.db") == False:
+        print("Data File ╳")
+        data()
