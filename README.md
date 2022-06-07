@@ -4,7 +4,7 @@ Tracks discord profile activity (doesn't work if this feature is disabled in OSU
 
 ![image](https://user-images.githubusercontent.com/70542011/154005106-15f2433b-20e0-4dd8-8e98-30321e0b73be.png)
 
-![image](https://user-images.githubusercontent.com/70542011/154066080-ea276f0e-ec50-416b-867c-324dcebde3fe.png)
+
 
 ![image](https://user-images.githubusercontent.com/70542011/158176095-9130ba33-14a1-49d4-9481-5d0c921fd405.png)
 
