@@ -144,6 +144,8 @@ async def score(ctx,type="recent",offset=0):
         }
         if type == "r":
             type = "recent"
+        if type == "b":
+            type = "best"
         params = (
             ('include_fails', '0'),
             ('mode', 'osu'),
