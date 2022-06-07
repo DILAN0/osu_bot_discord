@@ -19,4 +19,6 @@ Last Score
 
 ![image](https://user-images.githubusercontent.com/70542011/158176095-9130ba33-14a1-49d4-9481-5d0c921fd405.png)
 
+Best Score
+
 ![image](https://user-images.githubusercontent.com/70542011/158175994-a2bef6c9-ad82-491b-9ab2-438f59886267.png)
