@@ -45,43 +45,48 @@ async def add(ctx ,service,teg):
 @bot.command()
 async def account(ctx):
     for row in cursor.execute(f"SELECT nickname,pp,account,osu FROM users where id={ctx.author.id}"):
-        pp,id,avatar = response(id = row[3])
+        id,avatar = response(id = row[3])
         embed = discord.Embed(title="Данные:", color=discord.Color.from_rgb(255,102,170))
         embed.add_field(name=ctx.author.name,value=ctx.author.id,inline=False)
         embed.set_thumbnail(url=avatar)
         embed.add_field(name="OSU", value=f"https://osu.ppy.sh/users/{id}", inline=False)
-        embed.add_field(name="PP", value=pp, inline=False)
         await ctx.send(embed = embed)
 
 @bot.command()
-#Информация о игроке (Работает только с id)
-async def info_player(ctx, id):
+async def osu(ctx, id=""):
+    for row in cursor.execute(f"SELECT nickname,pp,account,osu FROM users where id={ctx.author.id}"):
+        token = get_token()
 
-    token = get_token()
-    #..........
-    headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': f'Bearer {token}'
-    }
+        if id == "":
+            tempid = row[3].split(" ")
+            uid = tempid[0]
+        else:
+            uid = id
+        #..........
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': f'Bearer {token}'
+        }
 
-    params = {
-        'mode': 'osu',
-        'limit': 5
-    }
-    #https://osu.ppy.sh/docs/index.html #gamemode
-    #..........
-    response = requests.get(f'{API_URL}/users/{id}', params=params, headers=headers)
 
-    beatmapset_data = response.json()
-    avatar = beatmapset_data['avatar_url']
-    pp = beatmapset_data['statistics']['pp']
-    id = beatmapset_data['id']
-    embed = discord.Embed(title='osu', color=discord.Color.from_rgb(255,102,170))
-    embed.add_field(name='URL', value=f'https://osu.ppy.sh/users/{id}', inline=False)
-    embed.add_field(name='PP', value=pp, inline=False)
-    embed.set_thumbnail(url=avatar)
-    await ctx.send(embed=embed)
+        params = {
+            'mode': 'osu',
+            'limit': 5
+        }
+        #https://osu.ppy.sh/docs/index.html #gamemode
+        #..........
+        response = requests.get(f'{API_URL}/users/{uid}', params=params, headers=headers)
+
+        beatmapset_data = response.json()
+        avatar = beatmapset_data['avatar_url']
+        pp = beatmapset_data['statistics']['pp']
+        id = beatmapset_data['id']
+        embed = discord.Embed(title='osu', color=discord.Color.from_rgb(255,102,170))
+        embed.add_field(name='URL', value=f'https://osu.ppy.sh/users/{id}', inline=False)
+        embed.add_field(name='PP', value=pp, inline=False)
+        embed.set_thumbnail(url=avatar)
+        await ctx.send(embed=embed)
 
 @bot.event
 async def on_member_update(prev, cur):
@@ -128,7 +133,7 @@ async def on_member_update(ctx,cur):
 
 
 @bot.command()
-async def score(ctx,type,offset):
+async def score(ctx,type="recent",offset=0):
     for row in cursor.execute(f"SELECT nickname,pp,account,osu FROM users where id={ctx.author.id}"):
         token = get_token()
         pp,id,avatar = response(id = row[3])
@@ -137,7 +142,8 @@ async def score(ctx,type,offset):
             'Accept': 'application/json',
             'Authorization': f'Bearer {token}'
         }
-
+        if type == "r":
+            type = "recent"
         params = (
             ('include_fails', '0'),
             ('mode', 'osu'),
