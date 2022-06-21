@@ -5,6 +5,10 @@ import sqlite3
 from Token import token
 from res.token_func import get_token, response,API_URL
 from res.create_data import check_file
+from res.web import app
+import os
+from os import environ, getcwd
+import shutil
 
 check_file()
 
@@ -110,7 +114,7 @@ async def on_member_update(ctx,cur):
     try:
         uid = cur.id
 
-        id_osu=cur.activity.assets['large_text'].split('(', 1)[0]
+        id_osu = cur.activity.assets['large_text'].split('(', 1)[0]
 
         for row in cursor.execute(f"SELECT nickname,pp,account,osu FROM users where id={cur.id}"):
                 if row[3] != 'S':
@@ -119,7 +123,6 @@ async def on_member_update(ctx,cur):
                     games = ["osu!"]
                     if cur.activity.name in games and cur.activity.details:
                         if cursor.execute(f"UPDATE users SET osu=? where id=?", (id_osu, uid)):
-
                             await cur.send(f"✔ Your OSU Account Add {cur.activity.assets['large_text']}")
 
                         else:
@@ -137,6 +140,7 @@ async def score(ctx,type="recent",offset=0):
     for row in cursor.execute(f"SELECT nickname,pp,account,osu FROM users where id={ctx.author.id}"):
         token = get_token()
         pp,id,avatar = response(id = row[3])
+
         headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -155,6 +159,7 @@ async def score(ctx,type="recent",offset=0):
 
         res = requests.get(f'https://osu.ppy.sh/api/v2/users/{id}/scores/{type}', headers=headers, params=params)
         score_assets = res.json()
+        acc = score_assets[0]['accuracy'] * 100
 
         pp = score_assets[0]["pp"]
         if score_assets[0]['rank'] == 'D':
@@ -179,22 +184,32 @@ async def score(ctx,type="recent",offset=0):
         embed.set_thumbnail(url=image_rank)
         embed.add_field(name="►Score:", value=f"https://osu.ppy.sh/scores/osu/{score_assets[0]['best_id']}", inline=False)
         embed.set_author(name=f"{score_assets[0]['user']['username']}",icon_url=avatar,url=f"https://osu.ppy.sh/users/{id}")
-        embed.add_field(name=f'►Accuracy: ',value=f"{float(round((score_assets[0]['accuracy']) * 100)) }%", inline=True)
+        embed.add_field(name=f'►Accuracy: ',value=f"{float(round(acc,2)) }%", inline=True)
         if score_assets[0]['perfect'] == True:
-            embed.add_field(name='►Combo:', value="FC", inline=True)
+            embed.add_field(name='►Combo:', value=f"💥 {score_assets[0]['max_combo']} 💥", inline=True)
         else:
             embed.add_field(name='►Combo:',value=score_assets[0]['max_combo'],inline=True)
-
         embed.add_field(name='►Performance:' ,value=f"{pp} pp", inline=True)
-
+        if score_assets[0]["replay"] == True:
+            embed.add_field(name="►Replay: ",value='✅',inline=True)
+        else:
+            embed.add_field(name="►Replay: ",value='❌',inline=True)
         embed.set_footer(text=f"{score_assets[0]['created_at']}", icon_url='https://img.icons8.com/clouds/344/osu.png')
-
 
         await ctx.send(embed = embed)
 
-# @bot.command()
-# async def replay(ctx):
-#     os.system('D:\Project\osu-discord-bot\danser--go\danser.exe -t="Ashes of the Dawn" -d="Expert" -replay="D:\GAmes\osu!\Replays\DILAN_NAXUY - DragonForce - Ashes of the Dawn [Expert] (2022-03-08) Osu.osr" -record')
-#
+
+@bot.command()
+async def replay(ctx):
+    #os.system('D:\Project\osu-discord-bot\danser--go\danser.exe -t="Ashes of the Dawn" -d="Expert" -replay="D:\GAmes\osu!\Replays\DILAN_NAXUY - DragonForce - Ashes of the Dawn [Expert] (2022-03-08) Osu.osr" -record')
+    for attach in ctx.message.attachments:
+        app.app.run()
+        await attach.save(f"./plays/osr/{attach.filename}")
+        await ctx.send(f"File add {attach.filename}")
+        environ['PATH'] += f';{getcwd()}\\ffmpeg;{getcwd()}\\danser--go'
+        os.system(f'D:\Project\osu-discord-bot\danser--go\danser.exe -replay="D:\Project\osu-discord-bot\plays\osr\{attach.filename}" -record')
+
+
+
 
 bot.run(token)
