@@ -14,6 +14,7 @@ def get_token():
 
     response = requests.post(TOKEN_URL, data=data)
 
+
     return response.json().get('access_token')
 
 def response(id):

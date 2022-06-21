@@ -8,7 +8,7 @@ from res.create_data import check_file
 from res.web import app
 import os
 from os import environ, getcwd
-import shutil
+
 
 check_file()
 
@@ -208,8 +208,6 @@ async def replay(ctx):
         await ctx.send(f"File add {attach.filename}")
         environ['PATH'] += f';{getcwd()}\\ffmpeg;{getcwd()}\\danser--go'
         os.system(f'D:\Project\osu-discord-bot\danser--go\danser.exe -replay="D:\Project\osu-discord-bot\plays\osr\{attach.filename}" -record')
-
-
 
 
 bot.run(token)
